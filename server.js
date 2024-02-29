@@ -6,13 +6,10 @@ const multer = require("multer");
 const path = require("path");
 
 //config multer
-const storageConfig = multer.diskStorage({
+const storage = multer.diskStorage({
   destination: "./images",
   filename: (req, file, cb) => {
-    cb(
-      null,
-      file.filename + "-" + Date.now() + path.extname(file.originalname)
-    );
+    cb(null, `${file.originalname}`);
   },
 });
 
@@ -26,7 +23,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const upload = multer({ storage: storageConfig });
+const upload = multer({ storage });
 
 //Define a route
 app.get("/", (req, res) => {
@@ -35,14 +32,7 @@ app.get("/", (req, res) => {
 
 //receive image from Frontend
 app.post("/upload", upload.single("image"), (req, res) => {
-  const file = req.image;
-  console.log(file);
-  console.log(
-    "-----------------------------------------------------------------------"
-  );
-  console.log(req.body.image);
-
-  res.json({ message: "image has been uploaded successfully" });
+  res.status(200).json({ message: "Image has been uploaded successfully" });
 });
 
 //Start the serve
